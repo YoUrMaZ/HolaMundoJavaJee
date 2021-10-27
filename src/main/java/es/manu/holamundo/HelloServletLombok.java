@@ -1,12 +1,20 @@
 package es.manu.holamundo;
 
-import java.io.*;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
 
-@WebServlet(name = "helloServlet", value = "/hello-servlet")
-public class HelloServlet extends HttpServlet {
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+@Slf4j
+@WebServlet(name = "helloServletLombok", value = "/hello-servlet-Lombok")
+public class HelloServletLombok extends HttpServlet {
     private String message;
 
     public void init() {
@@ -18,10 +26,10 @@ public class HelloServlet extends HttpServlet {
 
         // Hello
         PrintWriter out = response.getWriter();
+        log.debug("returning the message {}", message);
         out.println("<html><body>");
         out.println("<h1>" + message + "</h1>");
         out.println("</body></html>");
-
     }
 
     public void destroy() {
