@@ -13,16 +13,19 @@ public class CreaCookie extends HttpServlet {
   private static final String BR = "<br />";
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    throws IOException {
     procesaSolicitud(request, response);
   }
 
   @Override
-  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    throws IOException {
     procesaSolicitud(request, response);
   }
 
-  protected void procesaSolicitud(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  protected void procesaSolicitud(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
