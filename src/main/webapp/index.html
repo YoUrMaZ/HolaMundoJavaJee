@@ -4,12 +4,12 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<form method="post" action="${pageContext.request.contextPath}/Recepcion">
+<form method="get" action="Recepcion">
+
     <table>
         <tr>
             <td>Nombre de Usuario: </td>
             <td> <input type="text" name="usuario" size="35"/></td>
-
             </td>
         </tr>
         <tr>
@@ -20,6 +20,9 @@
             <td><input type="submit" value="enviar"/></td>
         </tr>
     </table>
+</form>
+
+
 </form>
 </body>
 </html>
