@@ -13,13 +13,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+
 @WebServlet("/Recepcion")
 public class Recepcion extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         procesaSolicitud(request, response);
     }
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, IOException {
+
         response.setContentType("text/html");
         String usuario = (String) request.getSession().getAttribute("usuario");
         Cookie miCookieUsu = new Cookie("nombre", usuario);
@@ -31,7 +32,7 @@ public class Recepcion extends HttpServlet {
         out.println("<br/> <br/> <br/>");
 
         out.println("<br/>");
-        out.println("<form method=\"post\" action=\"Cookie\">");
+        out.println("<form method=\"post\" action=\"Cookies\">");
         out.println("<input type=\"radio\" name=\"objeto\" value=\"Alfarero\">Alfarero</input>");
         out.println("<input type=\"radio\" name=\"objeto\" value=\"Brujo\">Brujo</input>");
         out.println("<input type=\"radio\" name=\"objeto\" value=\"Curtidor\">Curtidor</input>");
@@ -39,10 +40,10 @@ public class Recepcion extends HttpServlet {
         out.println("</form>");
 
         Cookie[] Contadorcookies = request.getCookies();
-        Cookie contador = buscaPersona(Contadorcookies);
+        Cookie contador = buscaCookie(Contadorcookies);
         if (contador == null) {
             // Creamos la cookie con el contador
-            Cookie cookie = new Cookie("nombre", "1");
+            Cookie cookie = new Cookie("contador", "1");
             cookie.setMaxAge(180);
             response.addCookie(cookie);
             // Mostramos el mensaje de primera visita
@@ -70,25 +71,13 @@ public class Recepcion extends HttpServlet {
             outa.println("</BODY>");
             outa.println("</HTML>");
         }
-        PrintWriter outc = response.getWriter();
-        outc.println("<html><body>");
-        outc.println("<p>Curtidor</p>" + "<input type=\"radio\">");
-
-
     }
+
     private Cookie buscaCookie(Cookie[] cookies) {
         if (cookies == null)
             return null;
         for (int i = 0; i < cookies.length; i++)
             if (cookies[i].getName().equals("contador"))
-                return cookies[i];
-        return null;
-    }
-    private Cookie buscaPersona(Cookie[] cookies) {
-        if (cookies == null)
-            return null;
-        for (int i = 0; i < cookies.length; i++)
-            if (cookies[i].getName().equals("Nombre"))
                 return cookies[i];
         return null;
     }

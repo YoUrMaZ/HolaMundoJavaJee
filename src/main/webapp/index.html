@@ -4,17 +4,20 @@
     <title>JSP - Hello World</title>
 </head>
 <body>
-<form method="get" action="Recepcion">
-
+<form method="post" action="Recepcion">
     <table>
         <tr>
             <td>Nombre de Usuario: </td>
-            <td> <input type="text" name="usuario" size="35"/></td>
-            </td>
+            <td><label>
+                <input type="text" name="usuario" size="35"/>
+            </label></td>
+
         </tr>
         <tr>
             <td>Contrasena</td>
-            <td><input type="text" name="contrasena" size="35"/></td>
+            <td><label>
+                <input type="text" name="contrasena" size="35"/>
+            </label></td>
         </tr>
         <tr>
             <td><input type="submit" value="enviar"/></td>
