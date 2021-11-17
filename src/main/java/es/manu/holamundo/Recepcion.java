@@ -1,36 +1,34 @@
 package es.manu.holamundo;
-
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-
 @WebServlet("/Recepcion")
 public class Recepcion extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
+
+        String usuario = request.getParameter("usuario");
+        Cookie usuarios = new Cookie("Nombre_usuarios", usuario);
+        usuarios.setMaxAge(1000000);
+        response.addCookie(usuarios);
+
         procesaSolicitud(request, response);
     }
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, IOException {
-
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws  IOException {
         response.setContentType("text/html");
-        String usuario = (String) request.getSession().getAttribute("usuario");
-        Cookie miCookieUsu = new Cookie("nombre", usuario);
-        miCookieUsu.setMaxAge(120);
-        response.addCookie(miCookieUsu);
 
         PrintWriter out = response.getWriter();
-        out.println("<p> Bienvenido: " + miCookieUsu.getValue());
-        out.println("<br/> <br/> <br/>");
 
+        Cookie[] ContadorPersonas = request.getCookies();
+        Cookie usuarios = BuscarUsuarios(ContadorPersonas);
+
+        out.println("<p> Bienvenido: " + usuarios.getValue());
         out.println("<br/>");
         out.println("<form method=\"post\" action=\"Cookies\">");
         out.println("<input type=\"radio\" name=\"objeto\" value=\"Alfarero\">Alfarero</input>");
@@ -41,27 +39,32 @@ public class Recepcion extends HttpServlet {
 
         Cookie[] Contadorcookies = request.getCookies();
         Cookie contador = buscaCookie(Contadorcookies);
+
+        Cookie[] oficios = request.getCookies();
+        Cookie oficio = BuscarOficio(oficios);
+
         if (contador == null) {
             // Creamos la cookie con el contador
-            Cookie cookie = new Cookie("contador", "1");
+            Cookie cookie = new Cookie("Contador" + usuarios.getValue(), "1");
             cookie.setMaxAge(180);
             response.addCookie(cookie);
             // Mostramos el mensaje de primera visita
-            out.println("<HTML>");
-            out.println("<BODY>");
+
+            out.println("<br/> <br/> <br/>");
             out.println("Primera visita");
             out.println("<BR>");
-            out.println("</BODY>");
-            out.println("</HTML>");
+
         } else {
             // Obtenemos el valor actual del contador
             int cont = Integer.parseInt(contador.getValue());
             cont++;
-            // Modificamos el valor de la cookie
-            // incrementando el contador
-            Cookie cookie = new Cookie("contador", "" + cont);
+
+            Cookie cookie = new Cookie("Contador" + usuarios.getValue(), "" + cont);
             cookie.setMaxAge(180);
             response.addCookie(cookie);
+            // Modificamos el valor de la cookie
+            // incrementando el contador
+
             // Mostramos el numero de visitas
             PrintWriter outa = response.getWriter();
             outa.println("<HTML>");
@@ -71,16 +74,52 @@ public class Recepcion extends HttpServlet {
             outa.println("</BODY>");
             outa.println("</HTML>");
         }
+
+    }
+    private Cookie BuscarUsuarios(Cookie[] cookies) {
+        if (cookies == null) {
+            return null;
+        } else {
+            for (int i = 0; i < cookies.length; i++) {
+                if (cookies[i].getName().equals("Nombre_usuarios")) {
+                    return cookies[i];
+                }
+            }
+        }
+        return null;
+    }
+    private String BuscarOficio(Cookie[] cookies) {
+        Cookie usuario = BuscarUsuarios(cookies);
+        String nombreUsu = usuario.getValue();
+
+        if (cookies == null) {
+            return null;
+        } else {
+            for (int i = 0; i < cookies.length; i++) {
+                if (cookies[i].getName().equals("oficio" + nombreUsu)) {
+                    return cookies[i].getValue();
+                }
+            }
+        }
+        return null;
     }
 
     private Cookie buscaCookie(Cookie[] cookies) {
+        Cookie usuario = BuscarUsuarios(cookies);
+        String nombreUsu = usuario.getValue();
+
         if (cookies == null)
             return null;
-        for (int i = 0; i < cookies.length; i++)
-            if (cookies[i].getName().equals("contador"))
-                return cookies[i];
+        for (int i = 0; i < cookies.length; i++){
+            if (cookies[i].getName().equals("contador" + nombreUsu)) {
+            return cookies[i];
+        }
+        }
         return null;
     }
+
+
+
     protected void procesaSolicitud(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html;charset=UTF-8");
         Map<String, String> usuarios = new HashMap<String, String>();
