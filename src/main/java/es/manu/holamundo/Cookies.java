@@ -12,10 +12,8 @@ import java.io.PrintWriter;
 
 @WebServlet(name = "Cookies", value = "/Cookies")
 public class Cookies extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String oficios = request.getParameter("objeto");
-        PrintWriter out = response.getWriter();
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String trabajo = request.getParameter("objeto");
         Cookie[] cookies = request.getCookies();
         String usu = null;
         for (int i = 0; i < cookies.length; i++) {
@@ -25,8 +23,9 @@ public class Cookies extends HttpServlet {
         }
 
 
-        Cookie oficio = new Cookie("oficio" + usu, oficios);
+        Cookie oficio = new Cookie("oficio" + usu, "" + trabajo);
         response.addCookie(oficio);
+
         String rutaContext = request.getContextPath();
         String destino = "/index.html";
         response.sendRedirect(rutaContext + destino);
