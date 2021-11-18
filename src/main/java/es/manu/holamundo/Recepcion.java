@@ -12,7 +12,6 @@ import java.util.Objects;
 @WebServlet("/Recepcion")
 public class Recepcion extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws  IOException {
-
         String usuario = request.getParameter("usuario");
         Cookie usuarios = new Cookie("Nombre_usuarios", usuario);
         usuarios.setMaxAge(1000000);
@@ -24,28 +23,47 @@ public class Recepcion extends HttpServlet {
         response.setContentType("text/html");
 
         PrintWriter out = response.getWriter();
+        Cookie[] Contadorcookies = request.getCookies();
+        Cookie contador = buscaContador(Contadorcookies);
+        Cookie usuarios = BuscarUsuarios(Contadorcookies);
+        Cookie oficio = BuscarOficio(Contadorcookies);
 
-        Cookie[] ContadorPersonas = request.getCookies();
-        Cookie usuarios = BuscarUsuarios(ContadorPersonas);
+        String Brujo = null;
+        String Alfarero = null;
+        String Curtidor = null;
+
+        if (oficio != null){
+            if (oficio.getValue().equals("Brujo")){
+                Brujo = "checked";
+            }
+            if (oficio.getValue().equals("Alfarero")){
+                Alfarero = "checked";
+            }
+            if (oficio.getValue().equals("Curtidor")){
+                Curtidor = "checked";
+            }
+        }
+
+
+
+
 
         out.println("<p> Bienvenido: " + usuarios.getValue());
         out.println("<br/>");
         out.println("<form method=\"post\" action=\"Cookies\">");
-        out.println("<input type=\"radio\" name=\"objeto\" value=\"Alfarero\">Alfarero</input>");
-        out.println("<input type=\"radio\" name=\"objeto\" value=\"Brujo\">Brujo</input>");
-        out.println("<input type=\"radio\" name=\"objeto\" value=\"Curtidor\">Curtidor</input>");
+        out.println("<input type=\"radio\" name=\"objeto\" value=\"Alfarero\"" + Alfarero + ">Alfarero</input>");
+        out.println("<input type=\"radio\" name=\"objeto\" value=\"Brujo\"" + Brujo + ">Brujo</input>");
+        out.println("<input type=\"radio\" name=\"objeto\" value=\"Curtidor\"" + Curtidor + ">Curtidor</input>");
         out.println("<input type=\"submit\" value=\"Desconectar\"></input>");
         out.println("</form>");
 
-        Cookie[] Contadorcookies = request.getCookies();
-        Cookie contador = buscaCookie(Contadorcookies);
 
-        Cookie[] oficios = request.getCookies();
-        Cookie oficio = BuscarOficio(oficios);
+
 
         if (contador == null) {
             // Creamos la cookie con el contador
-            Cookie cookie = new Cookie("Contador" + usuarios.getValue(), "1");
+
+            Cookie cookie = new Cookie("contador" + usuarios.getValue(), "1");
             cookie.setMaxAge(180);
             response.addCookie(cookie);
             // Mostramos el mensaje de primera visita
@@ -59,7 +77,7 @@ public class Recepcion extends HttpServlet {
             int cont = Integer.parseInt(contador.getValue());
             cont++;
 
-            Cookie cookie = new Cookie("Contador" + usuarios.getValue(), "" + cont);
+            Cookie cookie = new Cookie("contador" + usuarios.getValue(), "" + cont);
             cookie.setMaxAge(180);
             response.addCookie(cookie);
             // Modificamos el valor de la cookie
@@ -88,23 +106,24 @@ public class Recepcion extends HttpServlet {
         }
         return null;
     }
-    private String BuscarOficio(Cookie[] cookies) {
+    private Cookie BuscarOficio(Cookie[] cookies) {
         Cookie usuario = BuscarUsuarios(cookies);
         String nombreUsu = usuario.getValue();
+
 
         if (cookies == null) {
             return null;
         } else {
             for (int i = 0; i < cookies.length; i++) {
                 if (cookies[i].getName().equals("oficio" + nombreUsu)) {
-                    return cookies[i].getValue();
+                    return cookies[i];
                 }
             }
         }
         return null;
     }
 
-    private Cookie buscaCookie(Cookie[] cookies) {
+    private Cookie buscaContador(Cookie[] cookies) {
         Cookie usuario = BuscarUsuarios(cookies);
         String nombreUsu = usuario.getValue();
 
